@@ -1,6 +1,6 @@
 package machineLearning;
 
-import com.hallanmedeiros.exp2.data.LogisticRegressionLearn;
+import com.hallanmedeiros.exp2.data.IrisLearn;
 
 public class Application {
 
@@ -20,7 +20,7 @@ public class Application {
 	}
 
 	private void createOperationMode() {
-		operationMode = new LogisticRegressionLearn(); 		
+		operationMode = new IrisLearn();	
 		// TODO: Edit to create the proper operationMode -> operationMode =  new Classify();  		
 	}
 

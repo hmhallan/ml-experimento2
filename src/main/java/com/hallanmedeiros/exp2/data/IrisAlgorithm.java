@@ -13,7 +13,7 @@ import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.converters.CSVLoader;
 
-public class LogisticRegression extends Algorithm {
+public class IrisAlgorithm extends Algorithm {
 
 	private Instances instances;
 	private AbstractClassifier classifier;
