@@ -16,6 +16,7 @@ import com.hallanmedeiros.exp2.data.LabelsIris;
 import com.hallanmedeiros.exp2.view.IrisQuestionPanel;
 
 import machineLearning.Application;
+import machineLearning.Classify;
 
 public class MainForm extends JFrame{
 
@@ -161,7 +162,11 @@ public class MainForm extends JFrame{
 	
 	protected void startTest() {
 		if (application.getOperationMode() instanceof  machineLearning.Learn ) {
-			application.train();
+			if (application.train()) {
+				Classify classify = new Classify();
+				classify.setClassifier((application.getOperationMode().getClassifier()));
+				application.setOperationMode(classify);
+			}
 		} 
 
 	    mainPanel.setVisible(false);
