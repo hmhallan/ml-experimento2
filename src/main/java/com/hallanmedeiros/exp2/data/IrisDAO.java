@@ -48,7 +48,7 @@ public class IrisDAO extends DataDAO {
             	for (int j = 0; j < csvData.get(i).length - 1; j++) {            		
             		features[i][j] = Double.parseDouble(csvData.get(i)[j]); 	
             	}
-            	labels[i] = Integer.parseInt(csvData.get(i)[csvData.get(i).length - 1]);
+            	labels[i] = LabelsIris.valueOf( (csvData.get(i)[csvData.get(i).length - 1]).replace("-", "_")  ).ordinal();
             }
         } catch (IOException e) {
             e.printStackTrace();

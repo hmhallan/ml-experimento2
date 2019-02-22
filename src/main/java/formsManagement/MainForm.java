@@ -12,6 +12,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 
+import com.hallanmedeiros.exp2.data.LabelsIris;
 import com.hallanmedeiros.exp2.view.IrisQuestionPanel;
 
 import machineLearning.Application;
@@ -50,7 +51,6 @@ public class MainForm extends JFrame{
 		    @Override
 		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
 		       System.exit(0);
-		    	//application.close();		         // TODO: This can be edited to perform another actions 
 		    }
 		});
 	}
@@ -62,8 +62,8 @@ public class MainForm extends JFrame{
 	}
 
 	private void setFormInfo() {
-		this.setTitle("Aplication");
-		this.setInstructions("Set your instrucions  here");
+		this.setTitle("Iris - Indentificar flor");
+		this.setInstructions("Preencha os campos a seguir. Use somente números, com separador ponto (.) para casas decimais");
 	}
 
 	private void runApplication() {
@@ -182,7 +182,12 @@ public class MainForm extends JFrame{
 	}
 
 	private void setFinishMessage(double prediction) {
-		// TODO: Create the users feedback;
+		String message = "indefinido";
+		if (prediction >= 0) {
+			message = LabelsIris.values()[(int)prediction].name();
+		}
+		JOptionPane.showMessageDialog(this, "A flor é: " + message,
+				"Resultado!", JOptionPane.INFORMATION_MESSAGE);
 	}
 		
 }

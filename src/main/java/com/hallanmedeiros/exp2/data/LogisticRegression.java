@@ -1,89 +1,97 @@
 package com.hallanmedeiros.exp2.data;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import machineLearning.Algorithm;
-import weka.classifiers.Evaluation;
-import weka.classifiers.meta.RegressionByDiscretization;
+import weka.classifiers.AbstractClassifier;
+import weka.classifiers.bayes.NaiveBayes;
 import weka.core.Attribute;
 import weka.core.DenseInstance;
+import weka.core.FastVector;
+import weka.core.Instance;
 import weka.core.Instances;
+import weka.core.converters.CSVLoader;
 
 public class LogisticRegression extends Algorithm {
-	RegressionByDiscretization discretRegression;
-	Instances myTrainingData; 
-	ArrayList<Attribute> attributes;
-	
+
+	private Instances instances;
+	private AbstractClassifier classifier;
+
 	@Override
 	public boolean fit(double[][] features, double[] labels) {
-		double[][] fitData = new double[features.length][features[0].length + 1];
-		for (int i = 0; i < features.length; i++) {
-			for (int j = 0; j < features[i].length; j++) {
-				fitData[i][j] = features[i][j];
-			}		
-			fitData[i][fitData[0].length - 1] = labels[i];
-		}		
-		
-		attributes = new ArrayList<Attribute>();
-        for (int att = 0; att < fitData[0].length; att++) {
-        	attributes.add(new Attribute("Attribute" + att, att));
-        }
-        
-        myTrainingData = new Instances("Rel", attributes, fitData[0].length);
-        myTrainingData.setClassIndex(fitData[0].length-1);
-       
-        for (int inst = 0; inst < fitData.length; inst++) {
-        	DenseInstance trainingExample = new DenseInstance(fitData[inst].length);
-        	for (int j = 0; j < fitData[inst].length; j++) {
-        		trainingExample.setValue(j, fitData[inst][j]);
-        	}
-        	myTrainingData.add(trainingExample);    
-        }      
-               
-        discretRegression = new RegressionByDiscretization();
-        try {
-        	discretRegression.buildClassifier(myTrainingData);
-      	
 
-		} catch (Exception e) {			
-			e.printStackTrace();
-			return false;
-		}              
-        return SetPerformanceData();             
+//		ArrayList<Attribute> attributes = new ArrayList<Attribute>();
+//		attributes.add(new Attribute("w"));
+//		attributes.add(new Attribute("x"));
+//		attributes.add(new Attribute("y"));
+//		attributes.add(new Attribute("z"));
+//		attributes.add(new Attribute("class", new FastVector<>(Attribute.NOMINAL)));
+//		
+//		this.instances = new Instances("dataset", attributes, 150);
+//		this.instances.setClassIndex(4);
+//		
+//		for (int i = 0; i < features.length-1; i++) {
+//				Instance novo = new DenseInstance(5);
+//				novo.setDataset(this.instances);
+//				
+//				System.out.println(Arrays.toString(features[i]));
+//				System.out.println(LabelsIris.values()[(int)labels[i]].name());
+//				
+//		        novo.setValue(0, features[i][0]);
+//		        novo.setValue(1, features[i][1]);
+//		        novo.setValue(2, features[i][2]);
+//		        novo.setValue(3, features[i][3]);
+//		        novo.setValue(4, labels[i] );
+////		        novo.setValue(4, LabelsIris.values()[(int)labels[i]].name() );
+//		        
+//		        this.instances.add(novo);
+//		}		
+//		
+//		this.classifier = new NaiveBayes();
+//		try {
+//			this.classifier.buildClassifier(this.instances);
+//		} catch (Exception e) {
+//			throw new RuntimeException(e);
+//		}
+		
+		CSVLoader csv = new CSVLoader();
+        try {
+            csv.setSource(this.getClass().getResourceAsStream("/iris.csv"));
+            this.instances = csv.getDataSet();
+
+            //indice do atributo que é 'classe'
+            this.instances.setClassIndex(4);
+
+            this.classifier = new NaiveBayes();
+            this.classifier.buildClassifier(this.instances);
+        }
+        catch (Exception ex){
+            ex.printStackTrace();
+        }
+		
+		
+		return true;             
 	}
-	
-	
+
+
 	@Override
 	public double predict(double[] features) {		
-		Instances dataUnlabeled = new Instances("Sample", attributes, 0);		
-		DenseInstance dataToPredict = new DenseInstance(features.length +1);
 		
-	    for (int i = 0; i < features.length; i++) { 
-	    	dataToPredict.setValue(i, features[i]);
-	    }	
-	    dataToPredict.setValue(features.length , -1);
-	    try {
-			dataUnlabeled.add(dataToPredict);
-			dataUnlabeled.setClassIndex(dataUnlabeled.numAttributes() - 1);        					
-			return discretRegression.classifyInstance(dataUnlabeled.firstInstance());
-		} catch (Exception e) {			
-			e.printStackTrace();
-			return -1;
-		}
-	}
-	
-	private boolean SetPerformanceData() {
-		performanceData = new PerformanceDataLogisticRegression();
+		Instance novo = new DenseInstance(5);
+		novo.setDataset(this.instances);
+
+        novo.setValue(0, features[0]);
+        novo.setValue(1, features[1]);
+        novo.setValue(2, features[2]);
+        novo.setValue(3, features[3]);
 		
-        Evaluation testModel = null;
-		try {
-			testModel = new Evaluation(myTrainingData);
-			testModel.evaluateModel(discretRegression, myTrainingData);
-		} catch (Exception e) {			
-			e.printStackTrace();
-			return false;
+        //classifica a flor q chegou
+        try {
+			return classifier.classifyInstance(novo);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
-		return ((PerformanceDataLogisticRegression) performanceData).setData(testModel);		 
 	}
 
 

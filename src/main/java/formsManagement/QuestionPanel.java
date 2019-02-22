@@ -61,6 +61,7 @@ public abstract class QuestionPanel extends JPanel {
 	
 	public QuestionPanel() { 
 		initializeButtons();
+		this.isLastPanel = true;
 	}
 
 	protected void initializeButtons() {		
@@ -101,7 +102,7 @@ public abstract class QuestionPanel extends JPanel {
 	protected void nextPage() {
 		if (!checkAnswerRules()) {
 			JOptionPane.showMessageDialog(this, "The form was not filled properly", 
-				    "Aten��o", JOptionPane.WARNING_MESSAGE);
+				    "Atenção", JOptionPane.WARNING_MESSAGE);
 		} else{
 			collectData();
 		    if (!this.isLastPanel) {
